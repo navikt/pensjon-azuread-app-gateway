@@ -1,13 +1,26 @@
 package no.nav.pensjon.gateway.pensjonazureadappgateway
 
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
+import org.springframework.security.authentication.DelegatingReactiveAuthenticationManager
+import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.web.server.ServerHttpSecurity
+import org.springframework.security.oauth2.client.authentication.OAuth2LoginReactiveAuthenticationManager
+import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest
+import org.springframework.security.oauth2.client.endpoint.ReactiveOAuth2AccessTokenResponseClient
+import org.springframework.security.oauth2.client.endpoint.WebClientReactiveAuthorizationCodeTokenResponseClient
+import org.springframework.security.oauth2.client.oidc.authentication.OidcAuthorizationCodeReactiveAuthenticationManager
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcReactiveOAuth2UserService
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest
+import org.springframework.security.oauth2.client.userinfo.DefaultReactiveOAuth2UserService
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
+import org.springframework.security.oauth2.client.userinfo.ReactiveOAuth2UserService
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator
+import org.springframework.security.oauth2.core.oidc.user.OidcUser
+import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.oauth2.jwt.*
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.web.reactive.function.client.WebClient
@@ -18,16 +31,53 @@ import java.net.URI
 @Configuration
 class SecurityConfiguration {
     @Bean
-    fun springSecurityFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
+    fun springSecurityFilterChain(
+        http: ServerHttpSecurity,
+        reactiveAuthenticationManager: ReactiveAuthenticationManager,
+    ): SecurityWebFilterChain {
         http.authorizeExchange { authorize: ServerHttpSecurity.AuthorizeExchangeSpec ->
             authorize
                 .pathMatchers("/actuator/health/**").permitAll()
                 .pathMatchers("/actuator/prometheus/**").permitAll()
                 .anyExchange().authenticated()
         }
-        http.oauth2Login(Customizer.withDefaults())
-        http.oauth2Client(Customizer.withDefaults())
+        http.oauth2Login { it.authenticationManager(reactiveAuthenticationManager) }
+        http.oauth2Client { it.authenticationManager(reactiveAuthenticationManager) }
         return http.build()
+    }
+
+    @Bean
+    fun authenticationManager(
+        client: ReactiveOAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest>,
+        oidcUserService: ReactiveOAuth2UserService<OidcUserRequest, OidcUser>,
+        oauth2UserService: ReactiveOAuth2UserService<OAuth2UserRequest, OAuth2User>,
+    ): ReactiveAuthenticationManager = DelegatingReactiveAuthenticationManager(
+        OidcAuthorizationCodeReactiveAuthenticationManager(
+            client, oidcUserService
+        ), OAuth2LoginReactiveAuthenticationManager(
+            client, oauth2UserService
+        )
+    )
+
+    @Bean
+    fun webClientReactiveAuthorizationCodeTokenResponseClient(): WebClientReactiveAuthorizationCodeTokenResponseClient =
+        WebClientReactiveAuthorizationCodeTokenResponseClient().apply {
+            setWebClient(webClientProxy())
+        }
+
+    @Bean
+    fun oidcReactiveOAuth2UserService(reactiveOAuth2UserService: ReactiveOAuth2UserService<OAuth2UserRequest, OAuth2User>): OidcReactiveOAuth2UserService =
+        OidcReactiveOAuth2UserService().apply {
+            setOauth2UserService(
+                reactiveOAuth2UserService
+            )
+        }
+
+    @Bean
+    fun reactiveOAuth2UserService(): DefaultReactiveOAuth2UserService {
+        return DefaultReactiveOAuth2UserService().apply {
+            setWebClient(webClientProxy())
+        }
     }
 
     @Bean
@@ -36,10 +86,7 @@ class SecurityConfiguration {
         @Value("\${AZURE_OPENID_CONFIG_ISSUER}") issuer: String,
         @Value("\${AZURE_OPENID_CONFIG_JWKS_URI}") jwkSetUri: String,
     ): ReactiveJwtDecoder {
-        val jwtDecoder = NimbusReactiveJwtDecoder
-            .withJwkSetUri(jwkSetUri)
-            .webClient(webClientProxy())
-            .build()
+        val jwtDecoder = NimbusReactiveJwtDecoder.withJwkSetUri(jwkSetUri).webClient(webClientProxy()).build()
 
         jwtDecoder.setJwtValidator(
             DelegatingOAuth2TokenValidator(
