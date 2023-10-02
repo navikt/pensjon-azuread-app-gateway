@@ -1,7 +1,6 @@
 package no.nav.pensjon.gateway.pensjonazureadappgateway
 
 import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -26,7 +25,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.oauth2.jwt.*
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.web.reactive.function.client.*
-import reactor.core.publisher.Mono
 import reactor.netty.http.client.HttpClient
 import reactor.netty.transport.ProxyProvider.Proxy.HTTP
 import java.net.URI
@@ -59,7 +57,7 @@ class SecurityConfiguration {
     ): ReactiveAuthenticationManager = DelegatingReactiveAuthenticationManager(
         OidcAuthorizationCodeReactiveAuthenticationManager(
             client, oidcUserService
-        ), OAuth2LoginReactiveAuthenticationManager(
+        ).also { it.setJwtDecoderFactory(ReactiveOidcIdTokenDecoderFactory().apply { setWebClientResolver { webClientProxy() } }) }, OAuth2LoginReactiveAuthenticationManager(
             client, oauth2UserService
         )
     )
@@ -118,12 +116,12 @@ class SecurityConfiguration {
                         }
                     )
                 ).filter { request, next ->
-                    logger.info("Proxied request to {}", request.url());
-                    next.exchange(request);
+                    logger.info("Proxied request to {}", request.url())
+                    next.exchange(request)
                 }.build()
             }
             ?: WebClient.builder().filter { request, next ->
-                logger.info("Non-proxied request to {}", request.url());
-                next.exchange(request);
+                logger.info("Non-proxied request to {}", request.url())
+                next.exchange(request)
             }.build()
 }
