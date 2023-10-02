@@ -1,12 +1,14 @@
 package no.nav.pensjon.gateway.pensjonazureadappgateway
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.slf4j.LoggerFactory.getLogger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.security.authentication.DelegatingReactiveAuthenticationManager
 import org.springframework.security.authentication.ReactiveAuthenticationManager
-import org.springframework.security.config.Customizer
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.oauth2.client.authentication.OAuth2LoginReactiveAuthenticationManager
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest
@@ -30,6 +32,8 @@ import java.net.URI
 
 @Configuration
 class SecurityConfiguration {
+    private val logger: Logger = getLogger(javaClass)
+
     @Bean
     fun springSecurityFilterChain(
         http: ServerHttpSecurity,
@@ -102,6 +106,7 @@ class SecurityConfiguration {
         System.getenv("HTTP_PROXY")
             ?.let { URI(it) }
             ?.run {
+                logger.info("Using http proxy {}", this)
                 WebClient.builder().clientConnector(
                     ReactorClientHttpConnector(
                         HttpClient.create().proxy {
