@@ -41,6 +41,8 @@ spec:
         groups:
           - id: "{{{ azure_ad_group }}}"
       tenant: nav.no
+      replyURLs:
+        - "{{{ ingress }}}/login/oauth2/code/azuread"
   env:
     - name: "REMOTE"
       value: "{{{ remote }}}"
