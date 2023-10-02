@@ -47,3 +47,4 @@ spec:
   env:
     - name: "REMOTE"
       value: "{{{ remote }}}"
+  webproxy: true
