@@ -19,15 +19,15 @@ spec:
     failureThreshold: 100
     periodSeconds: 1
   replicas:
-    min: 2
-    max: 2
+    min: 1
+    max: 1
     cpuThresholdPercentage: 50
   prometheus:
     enabled: true
     path: "/actuator/prometheus"
   resources:
     limits:
-      memory: "256Mi"
+      memory: "512Mi"
     requests:
       cpu: "200m"
       memory: "256Mi"
