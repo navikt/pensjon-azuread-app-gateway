@@ -43,6 +43,7 @@ spec:
       tenant: nav.no
       replyURLs:
         - "{{{ ingress }}}/login/oauth2/code/azuread"
+        - "http://localhost:9080/login/oauth2/code/azuread"
   env:
     - name: "REMOTE"
       value: "{{{ remote }}}"
