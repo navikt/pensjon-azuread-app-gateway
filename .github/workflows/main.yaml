@@ -49,7 +49,7 @@ jobs:
       - uses: nais/deploy/actions/deploy@v1
         name: "Deploy to NAIS"
         env:
-          APIKEY: ${{ matrix.deploy_apikey }}
+          APIKEY: ${{ secrets[format('{0}', matrix.deploy_apikey)] }}
           RESOURCE: .nais/nais.yaml
           CLUSTER: "${{ matrix.cluster }}"
           VAR: remote=${{ matrix.remote }},ingress=${{ matrix.ingress }},azure_ad_group=${{ matrix.azure_ad_group }}
