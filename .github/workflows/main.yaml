@@ -39,7 +39,7 @@ jobs:
     strategy:
       matrix:
         include:
-         -  ingress: https://pensjon-psak-proxy-q2.dev.intern.nav.no
+         -  ingress: https://pensjon-psak-proxy-q2.intern.dev.nav.no
             remote: https://pensjon-psak-q2.dev.adeo.no
             cluster: dev-gcp
             deploy_apikey: NAIS_DEPLOY_TEAMPENSJON_Q2_APIKEY
