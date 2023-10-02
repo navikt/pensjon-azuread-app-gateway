@@ -25,7 +25,8 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.oauth2.jwt.*
 import org.springframework.security.web.server.SecurityWebFilterChain
-import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.*
+import reactor.core.publisher.Mono
 import reactor.netty.http.client.HttpClient
 import reactor.netty.transport.ProxyProvider.Proxy.HTTP
 import java.net.URI
@@ -116,7 +117,13 @@ class SecurityConfiguration {
                                 .port(port)
                         }
                     )
-                ).build()
+                ).filter { request, next ->
+                    logger.info("Proxied request to {}", request.url());
+                    next.exchange(request);
+                }.build()
             }
-            ?: WebClient.create()
+            ?: WebClient.builder().filter { request, next ->
+                logger.info("Non-proxied request to {}", request.url());
+                next.exchange(request);
+            }.build()
 }
