@@ -1,0 +1,47 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: "pensjon-azuread-app-gateway"
+  namespace: "teampensjon"
+  labels:
+    "team": "teampensjon"
+  annotations:
+    "start.nais.io/created-by": "me"
+    "start.nais.io/creationTimestamp": "2023-09-29T12:50:46.375869433"
+spec:
+  image: {{image}}
+  liveness:
+    path: "/isalive"
+    initialDelay: 20
+    timeout: 60
+  readiness:
+    path: "/isready"
+    initialDelay: 20
+    timeout: 60
+  replicas:
+    min: 2
+    max: 2
+    cpuThresholdPercentage: 50
+  prometheus:
+    enabled: true
+    path: "/metrics"
+  resources:
+    limits:
+      memory: "256Mi"
+    requests:
+      cpu: "200m"
+      memory: "256Mi"
+  ingresses:
+    - "{{{ ingress }}}"
+  azure:
+    application:
+      enabled: true
+      allowAllUsers: false
+      claims:
+        groups:
+          - id: "{{{ azure_ad_group }}}"
+    sidecar:
+      enabled: true
+  env:
+    - name: "REMOTE"
+      value: "{{{ remote }}}"

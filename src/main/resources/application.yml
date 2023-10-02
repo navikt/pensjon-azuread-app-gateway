@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: app
+        uri: ${REMOTE}
+        predicates:
+        - Path=/**
