@@ -6,3 +6,19 @@ spring:
         uri: ${REMOTE}
         predicates:
         - Path=/**
+  security:
+    oauth2:
+      client:
+        provider:
+          azuread:
+            issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+            user-info-uri: "" # Disable retrieval of userinfo from https://graph.microsoft.com/oidc/userinfo
+        registration:
+          azuread:
+            authorization-grant-type: authorization_code
+            provider: azuread
+            client-id: ${AZURE_APP_CLIENT_ID}
+            client-secret: ${AZURE_APP_CLIENT_SECRET}
+            scope:
+              - openid
+              - ${AZURE_APP_CLIENT_ID}/.default
