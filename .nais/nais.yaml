@@ -11,20 +11,23 @@ metadata:
 spec:
   image: {{image}}
   liveness:
-    path: "/isalive"
-    initialDelay: 20
-    timeout: 60
+    path: "/actuator/health/liveness"
+    initialDelay: 10
   readiness:
-    path: "/isready"
+    path: "/actuator/health/readiness"
+    initialDelay: 10
+  startup:
+    path: "/actuator/health/readiness"
     initialDelay: 20
-    timeout: 60
+    failureThreshold: 100
+    periodSeconds: 1
   replicas:
     min: 2
     max: 2
     cpuThresholdPercentage: 50
   prometheus:
     enabled: true
-    path: "/metrics"
+    path: "/actuator/prometheus"
   resources:
     limits:
       memory: "256Mi"
