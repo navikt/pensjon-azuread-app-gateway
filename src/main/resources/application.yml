@@ -1,3 +1,12 @@
+logging:
+  level:
+    reactor:
+      netty: INFO
+    org:
+      springframework:
+        cloud:
+          gateway: TRACE
+
 management:
   endpoints:
     web:
@@ -7,6 +16,10 @@ management:
 spring:
   cloud:
     gateway:
+      httpclient:
+        wiretap: true
+      httpserver:
+        wiretap: true
       routes:
       - id: app
         uri: ${REMOTE}
