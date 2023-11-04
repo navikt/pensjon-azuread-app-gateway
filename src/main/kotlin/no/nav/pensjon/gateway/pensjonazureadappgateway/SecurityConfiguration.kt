@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.security.authentication.DelegatingReactiveAuthenticationManager
 import org.springframework.security.authentication.ReactiveAuthenticationManager
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.oauth2.client.authentication.OAuth2LoginReactiveAuthenticationManager
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest
@@ -30,6 +31,7 @@ import reactor.netty.transport.ProxyProvider.Proxy.HTTP
 import java.net.URI
 
 @Configuration
+@EnableWebFluxSecurity
 class SecurityConfiguration {
     private val logger: Logger = getLogger(javaClass)
 
