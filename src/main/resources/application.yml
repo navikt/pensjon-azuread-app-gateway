@@ -28,6 +28,8 @@ spring:
         uri: ${REMOTE}
         predicates:
         - Path=/**
+        filters:
+          - PreserveHostHeader
   security:
     oauth2:
       client:
