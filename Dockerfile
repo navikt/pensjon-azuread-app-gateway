@@ -1,3 +1,3 @@
 FROM ghcr.io/navikt/baseimages/temurin:17
 
-COPY target/pensjon-azuread-app-gateway-*.jar app.jar
+COPY target/pensjon-app-gateway-*.jar app.jar

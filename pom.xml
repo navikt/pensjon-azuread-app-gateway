@@ -9,10 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>no.nav.pensjon.gateway</groupId>
-	<artifactId>pensjon-azuread-app-gateway</artifactId>
+	<artifactId>pensjon-app-gateway</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>pensjon-azuread-app-gateway</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Gateway som sikrer at man har personlig tilgang til applikasjonen som forsøkes nå</description>
 	<properties>
 		<java.version>17</java.version>
 		<kotlin.version>1.8.22</kotlin.version>
