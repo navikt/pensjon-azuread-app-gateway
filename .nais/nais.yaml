@@ -2,9 +2,9 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: "pensjon-azuread-app-gateway"
-  namespace: "teampensjon"
+  namespace: "pensjon-q2"
   labels:
-    "team": "teampensjon"
+    "team": "pensjon-q2"
 spec:
   image: {{image}}
   liveness:
