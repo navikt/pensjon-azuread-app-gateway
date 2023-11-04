@@ -1,10 +1,10 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: "pensjon-azuread-app-gateway"
-  namespace: "pensjon-q2"
+  name: "{{{ name }}}"
+  namespace: "{{{ namespace }}}"
   labels:
-    "team": "pensjon-q2"
+    "team": "{{{ namespace }}}"
 spec:
   image: {{image}}
   liveness:

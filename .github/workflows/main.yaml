@@ -39,7 +39,9 @@ jobs:
     strategy:
       matrix:
         include:
-         -  ingress: https://pensjon-psak-proxy-q2.dev.intern.nav.no
+         -  name: pensjon-psak-proxy-q2
+            namespace: pensjon-q2
+            ingress: https://pensjon-psak-proxy-q2.dev.intern.nav.no
             remote: http://pensjon-psak-q2.pensjon-q2.svc.nais.local
             cluster: dev-fss
             deploy_apikey: NAIS_DEPLOY_PENSJON_Q2_APIKEY
@@ -52,4 +54,4 @@ jobs:
           APIKEY: ${{ secrets[format('{0}', matrix.deploy_apikey)] }}
           RESOURCE: .nais/nais.yaml
           CLUSTER: "${{ matrix.cluster }}"
-          VAR: remote=${{ matrix.remote }},ingress=${{ matrix.ingress }},azure_ad_group=${{ matrix.azure_ad_group }}
+          VAR: remote=${{ matrix.remote }},ingress=${{ matrix.ingress }},azure_ad_group=${{ matrix.azure_ad_group }},name=${{ matrix.name }},namespace=${{ matrix.namespace }}
