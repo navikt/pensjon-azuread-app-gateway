@@ -40,6 +40,7 @@ class SecurityConfiguration {
         http: ServerHttpSecurity,
         reactiveAuthenticationManager: ReactiveAuthenticationManager,
     ): SecurityWebFilterChain {
+        http.csrf { it.disable() }
         http.authorizeExchange { authorize: ServerHttpSecurity.AuthorizeExchangeSpec ->
             authorize
                 .pathMatchers("/actuator/health/**").permitAll()
