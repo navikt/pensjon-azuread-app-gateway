@@ -40,6 +40,14 @@ jobs:
     strategy:
       matrix:
         include:
+         -  name: pensjon-psak-proxy-q0
+            namespace: pensjon-q0
+            ingress: https://pensjon-psak-q0.nais.preprod.local
+            remote: http://pensjon-psak-q0.pensjon-q0.svc.nais.local
+            cluster: dev-fss
+            deploy_apikey: NAIS_DEPLOY_PENSJON_Q0_APIKEY
+            azure_ad_group: "a17bb6c9-26d3-451b-b22b-4134b72669ec" # nais-team-pensjon-q0-innlogging
+
          -  name: pensjon-psak-proxy-q1
             namespace: pensjon-q1
             ingress: https://pensjon-psak-q1.nais.preprod.local
@@ -55,6 +63,14 @@ jobs:
             cluster: dev-fss
             deploy_apikey: NAIS_DEPLOY_PENSJON_Q2_APIKEY
             azure_ad_group: "6ecb30ca-93c0-41bb-8e7c-4ce5897d7025" # Teampensjon
+
+         -  name: pensjon-psak-proxy-q5
+            namespace: pensjon-q5
+            ingress: https://pensjon-psak-q5.nais.preprod.local
+            remote: http://pensjon-psak-q5.pensjon-q5.svc.nais.local
+            cluster: dev-fss
+            deploy_apikey: NAIS_DEPLOY_PENSJON_Q5_APIKEY
+            azure_ad_group: "8179b33b-87db-41b9-9505-e063c2b4737b" # nais-team-pensjon-q5-innlogging
 
     steps:
       - uses: actions/checkout@v4
