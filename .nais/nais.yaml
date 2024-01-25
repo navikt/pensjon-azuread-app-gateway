@@ -40,6 +40,8 @@ spec:
       claims:
         groups:
           - id: "{{{ azure_ad_group }}}"
+        extra:
+          - "NAVident"
       tenant: nav.no
       replyURLs:
         - "{{{ ingress }}}/login/oauth2/code/azuread"
