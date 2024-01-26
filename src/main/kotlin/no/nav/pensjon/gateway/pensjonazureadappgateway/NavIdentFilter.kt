@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono
 
 
 @Component
-class CustomGlobalFilter : GlobalFilter, Ordered {
+class NavIdentFilter : GlobalFilter, Ordered {
 
     override fun filter(exchange: ServerWebExchange, chain: GatewayFilterChain): Mono<Void> {
         return fetchNAVident()
