@@ -24,6 +24,7 @@ class GatewayConfig(
             .route("secured_route") { route ->
                 route.path("/**")
                     .filters { filterSpec ->
+                        filterSpec.filter(PreserveHostHeaderGatewayFilterFactory().apply())
                         filterSpec.filter(begrunnelseFilter)
                     }
                     .uri(remote)

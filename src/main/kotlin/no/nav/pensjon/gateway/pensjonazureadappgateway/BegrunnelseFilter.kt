@@ -27,8 +27,6 @@ class BegrunnelseFilter : GatewayFilter {
             exchange.response.headers.location = location
             exchange.response.setComplete()
         } else {
-            // Hvis begrunnelse er oppgitt, fortsett til neste filter/rute
-            exchange.attributes.put(ServerWebExchangeUtils.PRESERVE_HOST_HEADER_ATTRIBUTE, true);
             chain.filter(exchange)
         }
     }
